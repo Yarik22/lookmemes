@@ -1,95 +1,80 @@
-import Image from 'next/image'
-import styles from './page.module.css'
-
+"use client";
+import checkCircle from "../public/img/check-circle.png";
+import Category from "@/components/Category/Category";
+import styles from "./page.module.css";
+import { useEffect, useState } from "react";
+import Header from "@/components/Header/Header";
+import Image from "next/image";
+const mockups = [{ id: 1, name: "Category", checked: true }];
 export default function Home() {
+  const [categories, setCategories] = useState(
+    JSON.parse(localStorage.getItem("categories")) || mockups
+  );
+  const [string, setString] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
+  const addCategory = () => {
+    setShowConfirm(true);
+    setCategories((prev) => [
+      ...prev,
+      {
+        id:
+          categories.reduce(
+            (max, current) => (current.id > max ? current.id : max),
+            0
+          ) + 1,
+        name: "Category",
+        checked: true,
+      },
+    ]);
+  };
+  const saveChanges = () => {
+    if (categories.some((c) => c.name.trim().length == 0)) {
+      console.log(123);
+      return null;
+    }
+    setShowConfirm(false);
+    localStorage.setItem("categories", JSON.stringify(categories.map(c=>({...c,name:c.name.trim()}))));
+  };
+  const cancelChanges = () => {
+    setCategories(JSON.parse(localStorage.getItem("categories")));
+    setShowConfirm(false);
+  };
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    <>
+      <Header string={string} setString={setString} />
+      <main className={styles.main}>
+        <button className={styles.button} onClick={addCategory}>
+          + Create category
+        </button>
+        <ul className={styles.list}>
+          {categories
+            .filter((cat) =>
+              cat.name.toLowerCase().includes(string.toLowerCase())
+            )
+            .map((c) => {
+              return (
+                <li key={c.id}>
+                  <Category
+                    category={c}
+                    setCategories={setCategories}
+                    setShowConfirm={setShowConfirm}
+                  />
+                </li>
+              );
+            })}
+        </ul>
+        {showConfirm ? (
+          <footer className={styles.footer}>
+            <button className={styles.confirmButton} onClick={saveChanges}>
+              <Image src={checkCircle} alt="LOOKMEMES" placeholder="blur" />
+              Save Changes
+            </button>
+            <button className={styles.cancelButton} onClick={cancelChanges}>
+              Cancel
+            </button>
+          </footer>
+        ) : null}
+      </main>
+    </>
+  );
 }
