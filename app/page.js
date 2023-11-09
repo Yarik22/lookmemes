@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 import { useEffect, useState } from "react";
 import Header from "@/components/Header/Header";
 import Image from "next/image";
-const mockups = [{ id: 1, name: "Category", checked: true }];
+const mockups = [{ id: 1, name: "Other", checked: true }];
 export default function Home() {
   const [categories, setCategories] = useState(
     JSON.parse(localStorage.getItem("categories")) || mockups
@@ -27,13 +27,22 @@ export default function Home() {
       },
     ]);
   };
+  useEffect(() => {
+    localStorage.setItem(
+      "categories",
+      JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
+    );
+  }, []);
   const saveChanges = () => {
     if (categories.some((c) => c.name.trim().length == 0)) {
       console.log(123);
       return null;
     }
     setShowConfirm(false);
-    localStorage.setItem("categories", JSON.stringify(categories.map(c=>({...c,name:c.name.trim()}))));
+    localStorage.setItem(
+      "categories",
+      JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
+    );
   };
   const cancelChanges = () => {
     setCategories(JSON.parse(localStorage.getItem("categories")));
@@ -58,6 +67,7 @@ export default function Home() {
                     category={c}
                     setCategories={setCategories}
                     setShowConfirm={setShowConfirm}
+                    saveChanges={saveChanges}
                   />
                 </li>
               );

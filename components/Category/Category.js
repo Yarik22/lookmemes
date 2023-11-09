@@ -63,7 +63,7 @@ export default function Category(props) {
               border: "none",
               width: "30vw",
             }}
-            readOnly={checked}
+            readOnly={checked || props.category.name === "Other"}
             onChange={(e) => handleTextChange(e)}
           />
           <span className={styles.error}>
@@ -78,19 +78,23 @@ export default function Category(props) {
           onChange={() => handleChecked()}
           className={styles.toggleInput}
         />
-        <Image
-          onClick={handleDelete}
-          src={deleteIcon}
-          alt="LOOKMEMES"
-          placeholder="blur"
-          className={styles.deleteIcon}
-        />
-        <Image
-          src={dragIcon}
-          alt="LOOKMEMES"
-          placeholder="blur"
-          className={styles.dragIcon}
-        />
+        {props.category.name === "Other" ? null : (
+          <>
+            <Image
+              onClick={handleDelete}
+              src={deleteIcon}
+              alt="LOOKMEMES"
+              placeholder="blur"
+              className={styles.deleteIcon}
+            />
+            <Image
+              src={dragIcon}
+              alt="LOOKMEMES"
+              placeholder="blur"
+              className={styles.dragIcon}
+            />
+          </>
+        )}
       </div>
       {showModal && (
         <div className={styles.modalOverlay}>
