@@ -79,7 +79,7 @@ export default function Home() {
     );
   };
   const cancelChanges = () => {
-    setCategories(JSON.parse(localStorage.getItem("categories")));
+    setCategories(JSON.parse(localStorage.getItem("categories")) || mockups);
     setShowConfirm(false);
   };
   return (
