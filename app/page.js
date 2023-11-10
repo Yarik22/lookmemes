@@ -7,9 +7,16 @@ import Header from "@/components/Header/Header";
 import Image from "next/image";
 const mockups = [{ id: 1, name: "Other", checked: true }];
 export default function Home() {
-  const [categories, setCategories] = useState(
-    JSON.parse(localStorage.getItem("categories")) || mockups
-  );
+  const [categories, setCategories] = useState(() => {
+    // let loc;
+    // try {
+    //   loc = JSON.parse(localStorage.getItem("categories")) || mockups;
+    //   return loc;
+    // } catch (error) {
+    //   console.error(error.message);
+    // }
+    return mockups;
+  });
   const [string, setString] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const addCategory = () => {
@@ -28,10 +35,15 @@ export default function Home() {
     ]);
   };
   useEffect(() => {
-    localStorage.setItem(
-      "categories",
-      JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
-    );
+    try {
+      // localStorage.setItem(
+      //   "categories",
+      //   JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
+      // );
+      setCategories(JSON.parse(localStorage.getItem("categories")));
+    } catch (error) {
+      console.error(error.message);
+    }
   }, []);
   const saveChanges = () => {
     if (categories.some((c) => c.name.trim().length == 0)) {
@@ -39,13 +51,23 @@ export default function Home() {
       return null;
     }
     setShowConfirm(false);
-    localStorage.setItem(
-      "categories",
-      JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
-    );
+    try {
+      localStorage.setItem(
+        "categories",
+        JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
+      );
+    } catch (error) {
+      console.error(error.message);
+    }
   };
   const cancelChanges = () => {
-    setCategories(JSON.parse(localStorage.getItem("categories")));
+    let loc;
+    try {
+      loc = JSON.parse(localStorage.getItem("categories"));
+    } catch (error) {
+      console.error(error.message);
+    }
+    setCategories(loc);
     setShowConfirm(false);
   };
   return (

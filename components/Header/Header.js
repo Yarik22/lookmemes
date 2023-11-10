@@ -17,7 +17,7 @@ export default function Header(props) {
           onChange={(e) => handleString(e)}
         />
         <div className={styles.searchIcon}>
-          <Image src={search} width={20} height={20} />
+          <Image src={search} width={20} height={20} alt="LOOKMEMES" />
         </div>
       </div>
     </header>
