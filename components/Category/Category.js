@@ -44,7 +44,6 @@ export default function Category(props) {
   return (
     <div
       className={styles.category}
-      style={{ cursor: checked ? "not-allowed" : "default" }}
     >
       <div className={styles.name} color={checked ? "gray" : null}>
         <span

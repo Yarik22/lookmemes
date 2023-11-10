@@ -2,7 +2,7 @@
 import checkCircle from "../public/img/check-circle.png";
 import Category from "@/components/Category/Category";
 import styles from "./page.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header/Header";
 import Image from "next/image";
 const mockups = [{ id: 1, name: "Other", checked: true }];
@@ -10,6 +10,29 @@ export default function Home() {
   const [categories, setCategories] = useState(mockups);
   const [string, setString] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
+  const [draggedItem, setDraggedItem] = useState(null);
+  const dragItem = useRef();
+
+  const handleDragStart = (index) => {
+    setDraggedItem(categories[index]);
+    dragItem.current = index;
+  };
+
+  const handleDragEnter = (index) => {
+    if (dragItem.current !== index) {
+      const newItems = [...categories];
+      newItems.splice(index, 0, newItems.splice(dragItem.current, 1)[0]);
+      setCategories(newItems);
+      dragItem.current = index;
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedItem(null);
+    dragItem.current = null;
+    saveChanges();
+  };
+
   const addCategory = () => {
     setShowConfirm(true);
     setCategories((prev) => [
@@ -71,9 +94,15 @@ export default function Home() {
             .filter((cat) =>
               cat.name.toLowerCase().includes(string.toLowerCase())
             )
-            .map((c) => {
+            .map((c, index) => {
               return (
-                <li key={c.id}>
+                <li
+                  key={c.id}
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragEnter={() => handleDragEnter(index)}
+                  onDragEnd={handleDragEnd}
+                >
                   <Category
                     category={c}
                     setCategories={setCategories}
