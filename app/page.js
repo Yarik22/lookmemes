@@ -5,9 +5,9 @@ import styles from "./page.module.css";
 import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header/Header";
 import Image from "next/image";
-const mockups = [{ id: 1, name: "Other", checked: true }];
+const mockups = [{ id: 1, name: "Other", checked: false }];
 export default function Home() {
-  const [categories, setCategories] = useState(mockups);
+  const [categories, setCategories] = useState([]);
   const [string, setString] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -30,7 +30,7 @@ export default function Home() {
   const handleDragEnd = () => {
     setDraggedItem(null);
     dragItem.current = null;
-    saveChanges();
+    setShowConfirm(true);
   };
 
   const addCategory = () => {
@@ -61,9 +61,11 @@ export default function Home() {
     return false;
   }
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem("categories"))) {
+    if (localStorage.getItem("categories")) {
       setCategories(JSON.parse(localStorage.getItem("categories")));
+      return;
     }
+    setCategories(mockups);
   }, []);
   const saveChanges = () => {
     if (

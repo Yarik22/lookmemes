@@ -33,6 +33,7 @@ export default function Category(props) {
     setShowModal(false);
   };
   const handleChecked = () => {
+    console.log(props.category.id)
     props.setShowConfirm(true);
     props.setCategories((prev) =>
       prev.map((cat) =>
@@ -42,9 +43,7 @@ export default function Category(props) {
     setChecked(!checked);
   };
   return (
-    <div
-      className={styles.category}
-    >
+    <div className={styles.category}>
       <div className={styles.name} color={checked ? "gray" : null}>
         <span
           style={{
@@ -62,7 +61,7 @@ export default function Category(props) {
               border: "none",
               width: "30vw",
             }}
-            readOnly={checked || props.category.name === "Other"}
+            readOnly={checked || props.category.id === 1}
             onChange={(e) => handleTextChange(e)}
           />
           <span className={styles.error}>
