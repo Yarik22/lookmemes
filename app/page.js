@@ -8,13 +8,7 @@ import Image from "next/image";
 const mockups = [{ id: 1, name: "Other", checked: true }];
 export default function Home() {
   const [categories, setCategories] = useState(() => {
-    // let loc;
-    // try {
-    //   loc = JSON.parse(localStorage.getItem("categories")) || mockups;
-    //   return loc;
-    // } catch (error) {
-    //   console.error(error.message);
-    // }
+    // return JSON.parse(sessionStorage.getItem("categories")) || mockups;
     return mockups;
   });
   const [string, setString] = useState("");
@@ -34,40 +28,40 @@ export default function Home() {
       },
     ]);
   };
-  useEffect(() => {
-    try {
-      // localStorage.setItem(
-      //   "categories",
-      //   JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
-      // );
-      setCategories(JSON.parse(localStorage.getItem("categories")));
-    } catch (error) {
-      console.error(error.message);
+
+  function hasDuplicateNames(array) {
+    let encounteredNames = {};
+    for (let obj of array) {
+      if (encounteredNames[obj.name]) {
+        return true;
+      } else {
+        encounteredNames[obj.name] = true;
+      }
     }
+    return false;
+  }
+  useEffect(() => {
+    setCategories(JSON.parse(localStorage.getItem("categories")));
+    // localStorage.setItem(
+    //   "categories",
+    //   JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
+    // );
   }, []);
   const saveChanges = () => {
-    if (categories.some((c) => c.name.trim().length == 0)) {
-      console.log(123);
+    if (
+      categories.some((c) => c.name.trim().length == 0) ||
+      hasDuplicateNames(categories)
+    ) {
       return null;
     }
     setShowConfirm(false);
-    try {
-      localStorage.setItem(
-        "categories",
-        JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
-      );
-    } catch (error) {
-      console.error(error.message);
-    }
+    localStorage.setItem(
+      "categories",
+      JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
+    );
   };
   const cancelChanges = () => {
-    let loc;
-    try {
-      loc = JSON.parse(localStorage.getItem("categories"));
-    } catch (error) {
-      console.error(error.message);
-    }
-    setCategories(loc);
+    setCategories(JSON.parse(localStorage.getItem("categories")));
     setShowConfirm(false);
   };
   return (
@@ -90,23 +84,24 @@ export default function Home() {
                     setCategories={setCategories}
                     setShowConfirm={setShowConfirm}
                     saveChanges={saveChanges}
+                    categories={categories}
                   />
                 </li>
               );
             })}
         </ul>
-        {showConfirm ? (
-          <footer className={styles.footer}>
-            <button className={styles.confirmButton} onClick={saveChanges}>
-              <Image src={checkCircle} alt="LOOKMEMES" placeholder="blur" />
-              Save Changes
-            </button>
-            <button className={styles.cancelButton} onClick={cancelChanges}>
-              Cancel
-            </button>
-          </footer>
-        ) : null}
       </main>
+      {showConfirm ? (
+        <footer className={styles.footer}>
+          <button className={styles.confirmButton} onClick={saveChanges}>
+            <Image src={checkCircle} alt="LOOKMEMES" placeholder="blur" />
+            Save Changes
+          </button>
+          <button className={styles.cancelButton} onClick={cancelChanges}>
+            Cancel
+          </button>
+        </footer>
+      ) : null}
     </>
   );
 }

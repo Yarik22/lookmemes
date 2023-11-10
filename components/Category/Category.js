@@ -67,7 +67,16 @@ export default function Category(props) {
             onChange={(e) => handleTextChange(e)}
           />
           <span className={styles.error}>
-            {props.category.name.trim().length === 0 ? "Empty category" : null}
+            {props.category.name.trim().length === 0
+              ? "Empty category"
+              : props.categories.some(
+                  (c) =>
+                    c.name.toLowerCase() ===
+                      props.category.name.toLowerCase() &&
+                    c.id !== props.category.id
+                )
+              ? "This category already exists"
+              : null}
           </span>
         </span>
       </div>
@@ -78,7 +87,7 @@ export default function Category(props) {
           onChange={() => handleChecked()}
           className={styles.toggleInput}
         />
-        {props.category.name === "Other" ? null : (
+        {props.category.id === 1 ? null : (
           <>
             <Image
               onClick={handleDelete}

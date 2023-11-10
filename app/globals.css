@@ -27,6 +27,8 @@ dd {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   font-family: "Satoshi", sans-serif;
   min-height: 100vh;
   scroll-behavior: smooth;
