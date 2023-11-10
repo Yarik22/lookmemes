@@ -7,10 +7,7 @@ import Header from "@/components/Header/Header";
 import Image from "next/image";
 const mockups = [{ id: 1, name: "Other", checked: true }];
 export default function Home() {
-  const [categories, setCategories] = useState(() => {
-    // return JSON.parse(sessionStorage.getItem("categories")) || mockups;
-    return mockups;
-  });
+  const [categories, setCategories] = useState(mockups);
   const [string, setString] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const addCategory = () => {
@@ -41,11 +38,9 @@ export default function Home() {
     return false;
   }
   useEffect(() => {
-    setCategories(JSON.parse(localStorage.getItem("categories")));
-    // localStorage.setItem(
-    //   "categories",
-    //   JSON.stringify(categories.map((c) => ({ ...c, name: c.name.trim() })))
-    // );
+    if (JSON.parse(localStorage.getItem("categories"))) {
+      setCategories(JSON.parse(localStorage.getItem("categories")));
+    }
   }, []);
   const saveChanges = () => {
     if (
