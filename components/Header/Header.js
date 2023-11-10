@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Header.module.css";
 import Image from "next/image";
 import logo from "../../public/img/logo.png";
-import search from "../../public/img/loupe.png";
+import search from "../../public/img/search.png";
 export default function Header(props) {
   const handleString = (e) => {
     props.setString(e.target.value);
